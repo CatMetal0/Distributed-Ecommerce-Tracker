@@ -1,0 +1,30 @@
+services:
+  scrapy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PYTHON_IMAGE_VERSION=${PYTHON_IMAGE_VERSION}
+    volumes:
+      - .:/app/
+    tty: true
+    command: ["sleep", "infinity"]
+  rabbitmq:
+    image: bitnamilegacy/rabbitmq:3.11
+    environment:
+      - RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME:-username}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD:-password}
+      - RABBITMQ_VHOSTS=${RABBITMQ_VIRTUAL_HOST:-/vhost}
+    ports:
+      - 5672:5672
+      - 15672:15672
+  mysql:
+    image: bitnamilegacy/mysql:8.0
+    environment:
+      - MYSQL_USER=${DB_USERNAME:-username}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-password}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-password}
+      - MYSQL_DATABASE=${DB_DATABASE:-database_name}
+    ports:
+      - 3306:3306
