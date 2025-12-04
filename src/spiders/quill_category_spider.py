@@ -16,6 +16,18 @@ from settings import CATEGORY_QUILL_TASK, CATEGORY_RESULTS
 
 
 class CategorySpiderQuill(TaskToMultipleResultsSpider):
+    
+    """
+    Listens to 'category.quill.task' (via CATEGORY_QUILL_TASK),
+    parses category pages for product links, handles pagination, and yields multiple 'DetailProductPageItem's to the results queue.
+
+    To create a new spider (e.g., SamsClubCategory):
+    1. Copy this file.
+    2. Change 'name' (e.g., 'samsclub_category_spider').
+    3. Change 'task_queue_name' in __init__ (e.g., 'CATEGORY_SAMS_CLUB_TASK').
+    4. Update '_extract_product_urls' with the target site's product link XPath/logic.
+    5. Update '_extract_page_count' and '_build_paged_url' to match the target site's pagination structure.
+    """
 
     name = "quill_category_spider"
     custom_settings = {
