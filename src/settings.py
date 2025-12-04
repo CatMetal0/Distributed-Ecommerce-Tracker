@@ -61,7 +61,16 @@ TELNETCONSOLE_ENABLED = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {"scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": None}
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_impersonate.ImpersonateDownloadHandler",
+    "https": "scrapy_impersonate.ImpersonateDownloadHandler",
+}
+
+DOWNLOADER_MIDDLEWARES = {
+    "middlewares.http_proxy_middleware.HttpProxyMiddleware": 543,
+    "middlewares.retry_blocked_middleware.RetryBlockedMiddleware": 600,
+    "scrapy_impersonate.RandomBrowserMiddleware": 1000,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -102,6 +111,14 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 install_reactor(TWISTED_REACTOR)
 FEED_EXPORT_ENCODING = "utf-8"
 
+LOG_ENABLED = True
+
+LOG_TO_FILE = os.getenv("LOG_TO_FILE", False)
+if LOG_TO_FILE:
+    LOG_FOLDER = os.path.join(os.getcwd(), "logs")
+    os.makedirs(LOG_FOLDER, exist_ok=True)
+    LOG_FILE = os.path.join(LOG_FOLDER, "Scrapy.log")
+
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING")
 
 PROXY = os.getenv("PROXY", "")
@@ -119,3 +136,13 @@ RABBITMQ_PORT = int(os.getenv("RABBITMQ_PORT", "5672"))
 RABBITMQ_USERNAME = os.getenv("RABBITMQ_USERNAME", "guest")
 RABBITMQ_PASSWORD = os.getenv("RABBITMQ_PASSWORD", "guest")
 RABBITMQ_VIRTUAL_HOST = os.getenv("RABBITMQ_VIRTUAL_HOST", "/")
+
+CATEGORY_VIKING_TASK = "category.viking.task"
+CATEGORY_QUILL_TASK = "category.quill.task"
+CATEGORY_RESULTS = "category.result"
+
+PRODUCT_QUILL_TASK = "product.quill.task"
+PRODUCT_VIKING_TASK = "product.viking.task"
+
+RMQ_QUEUE_RESULTS= "product.result"
+RMQ_QUEUE_REPLIES = "replies"
